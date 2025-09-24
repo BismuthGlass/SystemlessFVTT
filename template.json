@@ -3,7 +3,9 @@
     "types": ["actor"],
     "templates": {
       "base": {
-        "biography": ""
+          "biography": "",
+          "page2": "",
+          "page3": ""
       }
     },
     "actor": {

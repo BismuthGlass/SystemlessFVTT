@@ -1,0 +1,7 @@
+<section class="tab scrollable{{#if tab.active}} active{{if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+    {{!-- Biography Tab --}}
+    <div class="tab biography" data-group="primary" data-tab="description">
+        {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
+        {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+    </div>
+</section>

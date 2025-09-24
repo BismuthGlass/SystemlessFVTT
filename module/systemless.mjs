@@ -42,12 +42,14 @@ Hooks.once('init', function () {
   CONFIG.ActiveEffect.legacyTransferral = false;
 
   // Register sheet application classes
-  Actors.unregisterSheet('core', ActorSheet);
+  const Actors = foundry.documents.collections.Actors;
+  Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
   Actors.registerSheet('systemless', SystemlessActorSheet, {
     makeDefault: true,
     label: 'SYSTEMLESS.SheetLabels.Actor',
   });
-  Items.unregisterSheet('core', ItemSheet);
+  const Items = foundry.documents.collections.Items;
+  Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
   Items.registerSheet('systemless', SystemlessItemSheet, {
     makeDefault: true,
     label: 'SYSTEMLESS.SheetLabels.Item',

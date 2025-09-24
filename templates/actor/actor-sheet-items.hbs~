@@ -1,0 +1,6 @@
+<section class="tab scrollable{{#if tab.active}} active{{if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+        {{> "systems/systemless/templates/actor/parts/actor-items.hbs"}}
+    </div>
+</section>

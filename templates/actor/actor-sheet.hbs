@@ -12,6 +12,7 @@
   <nav class="sheet-tabs tabs" data-group="primary">
     {{!-- Default tab is specified in actor-sheet.mjs --}}
     <a class="item" data-tab="description">Description</a>
+    <a class="item" data-tab="page2">Page 2</a>
     <a class="item" data-tab="items">Items</a>
   </nav>
 
@@ -22,6 +23,11 @@
     <div class="tab biography" data-group="primary" data-tab="description">
       {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
       {{editor enrichedBiography target="system.biography" engine="prosemirror" button=true editable=editable}}
+    </div>
+
+    <div class="tab biography" data-group="primary" data-tab="page2">
+      {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
+      {{editor enrichedPage2 target="system.page2" engine="prosemirror" button=true editable=editable}}
     </div>
 
     {{!-- Owned Items Tab --}}

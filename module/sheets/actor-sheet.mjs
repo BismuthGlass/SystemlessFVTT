@@ -1,38 +1,41 @@
+const GlobalTextEditor = foundry.applications.ux.TextEditor.implementation;
+const { ActorSheetV2 } = foundry.applications.sheets;
+const {HandlebarsApplicationMixin} = foundry.applications.api;
+
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class SystemlessActorSheet extends ActorSheet {
-  /** @override */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['systemless', 'sheet', 'actor'],
-      width: 600,
-      height: 600,
+export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
+  static DEFAULT_OPTIONS = {
+    classes: ['systemless', 'sheet', 'actor'],
+    position: {width: 600},
+  }
+
+  static PARTS = {
+    header: {template: 'systems/crow-systemless/templates/actor/actor-sheet-header.hbs'},
+    tabs: {template: "templates/generic/tab-navigation.hbs"},
+    bio: {template: 'systems/crow-systemless/templates/actor/actor-sheet-bio.hbs'},
+    page2: {template: 'systems/crow-systemless/templates/actor/actor-sheet-page2.hbs'},
+    items: {template: 'systems/crow-systemless/templates/actor/actor-sheet-items.hbs'},
+  }
+
+  static TABS = {
+    sheet: {
+      initial: "bio",
       tabs: [
-        {
-          navSelector: '.sheet-tabs',
-          contentSelector: '.sheet-body',
-          initial: 'description',
-        },
+        {id: "bio", label: "Description"},
+        {id: "page2", label: "Page 2"},
+        {id: "items", label: "Items"}
       ],
-    });
+    }
   }
 
-  /** @override */
-  get template() {
-    return `systems/systemless/templates/actor/actor-sheet.hbs`;
-  }
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
 
-  /* -------------------------------------------- */
-
-  /** @override */
-  async getData() {
-    // Retrieve the data structure from the base sheet. You can inspect or log
-    // the context variable to see the structure, but some key properties for
-    // sheets are the actor object, the data object, whether or not it's
-    // editable, the items array, and the effects array.
-    const context = super.getData();
+    console.log(context);
 
     // Use a safe clone of the actor data for further operations.
     const actorData = this.document.toObject(false);
@@ -40,25 +43,25 @@ export class SystemlessActorSheet extends ActorSheet {
     // Add the actor's data to context.data for easier access, as well as flags.
     context.system = actorData.system;
     context.flags = actorData.flags;
+    context.actor = context.source;
+    console.log(context);
 
     // Adding a pointer to CONFIG.SYSTEMLESS
     context.config = CONFIG.SYSTEMLESS;
 
     // Prepare character data and items.
     if (actorData.type == 'actor') {
-      this._prepareItems(context);
-      this._prepareActorData(context);
+      this.#prepareItems(context.document);
+      this.#prepareActorData(context);
     }
 
     // Enrich biography info for display
     // Enrichment turns text like `[[/r 1d20]]` into buttons
-    context.enrichedBiography = await TextEditor.enrichHTML(
+    context.enrichedBiography = await GlobalTextEditor.enrichHTML(
       this.actor.system.biography,
       {
         // Whether to show secret blocks in the finished html
         secrets: this.document.isOwner,
-        // Necessary in v11, can be removed in v12
-        async: true,
         // Data to fill in for inline rolls
         rollData: this.actor.getRollData(),
         // Relative UUID resolution
@@ -66,46 +69,31 @@ export class SystemlessActorSheet extends ActorSheet {
       }
     );
 
+    context.enrichedPage2 = await GlobalTextEditor.enrichHTML(
+      this.actor.system.page2,
+      {
+        secrets: this.document.isOwner,
+        rollData: this.actor.getRollData(),
+        relativeTo: this.actor,
+      }
+    );
+
     return context;
   }
 
-  /**
-   * Character-specific context modifications
-   *
-   * @param {object} context The context object to mutate
-   */
-  _prepareActorData(context) {
-    // This is where you can enrich character-specific editor fields
-    // or setup anything else that's specific to this type
-  }
-
-  /**
-   * Organize and classify Items for Actor sheets.
-   *
-   * @param {object} context The context object to mutate
-   */
-  _prepareItems(context) {
-    // Initialize containers.
-    const gear = [];
-
-    // Iterate through items, allocating to containers
-    for (let i of context.items) {
-      i.img = i.img || Item.DEFAULT_ICON;
-      // Append to gear.
-      if (i.type === 'item') {
-        gear.push(i);
-      }
-    }
-
-    // Assign and return
-    context.gear = gear;
-
-  /* -------------------------------------------- */
+  async _preparePartContext(partId, context, options) {
+    console.log("prepare part");
+    const partContext = await super._preparePartContext(partId, context, options);
+    if (partId in partContext.tabs)
+      partContext.tab = partContext.tabs[partId];
+    return partContext;
   }
 
   /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
+  async _onRender(context, options) {
+    await super._onRender(context, options);
+
+    const html = $(this.element)
 
     // Render the item sheet for viewing/editing prior to the editable check.
     html.on('click', '.item-edit', (ev) => {
@@ -119,7 +107,7 @@ export class SystemlessActorSheet extends ActorSheet {
     if (!this.isEditable) return;
 
     // Add Inventory Item
-    html.on('click', '.item-create', this._onItemCreate.bind(this));
+    html.on('click', '.item-create', this.#onItemCreate.bind(this));
 
     // Delete Inventory Item
     html.on('click', '.item-delete', (ev) => {
@@ -150,12 +138,46 @@ export class SystemlessActorSheet extends ActorSheet {
     }
   }
 
+  /* -------------------------------------------- */
+
+  /**
+   * Character-specific context modifications
+   *
+   * @param {object} context The context object to mutate
+   */
+  #prepareActorData(context) {
+    // This is where you can enrich character-specific editor fields
+    // or setup anything else that's specific to this type
+  }
+
+  /**
+   * Organize and classify Items for Actor sheets.
+   *
+   * @param {object} context The context object to mutate
+   */
+  #prepareItems(context) {
+    // Initialize containers.
+    const gear = [];
+
+    // Iterate through items, allocating to containers
+    for (let i of context.items) {
+      i.img = i.img || Item.DEFAULT_ICON;
+      // Append to gear.
+      if (i.type === 'item') {
+        gear.push(i);
+      }
+    }
+
+    // Assign and return
+    context.gear = gear;
+  }
+
   /**
    * Handle creating a new Owned Item for the actor using initial data defined in the HTML dataset
    * @param {Event} event   The originating click event
    * @private
    */
-  async _onItemCreate(event) {
+  async #onItemCreate(event) {
     event.preventDefault();
     const header = event.currentTarget;
     // Get the type of item to create.

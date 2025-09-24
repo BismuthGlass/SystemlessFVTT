@@ -1,8 +1,10 @@
+const GlobalTextEditor = foundry.applications.ux.TextEditor.implementation;
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-export class SystemlessItemSheet extends ItemSheet {
+export class SystemlessItemSheet extends foundry.appv1.sheets.ItemSheet {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -42,7 +44,7 @@ export class SystemlessItemSheet extends ItemSheet {
 
     // Enrich description info for display
     // Enrichment turns text like `[[/r 1d20]]` into buttons
-    context.enrichedDescription = await TextEditor.enrichHTML(
+    context.enrichedDescription = await GlobalTextEditor.enrichHTML(
       this.item.system.description,
       {
         // Whether to show secret blocks in the finished html
