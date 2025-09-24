@@ -9,6 +9,9 @@ const {HandlebarsApplicationMixin} = foundry.applications.api;
  */
 export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
+    form: {
+      submitOnChange: true
+    },
     classes: ['systemless', 'sheet', 'actor'],
     position: {width: 600},
   }
