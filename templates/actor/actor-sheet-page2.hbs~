@@ -1,6 +1,0 @@
-<section class="tab scrollable{{#if tab.active}} active{{if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
-    <div class="tab biography" data-group="primary" data-tab="page2">
-        {{!-- Editors must receive enriched text data from getData to properly handle rolls --}}
-        {{editor enrichedPage2 target="system.page2" engine="prosemirror" button=true editable=editable}}
-    </div>
-</section>
