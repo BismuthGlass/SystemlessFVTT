@@ -57,7 +57,7 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
 
     // Prepare character data and items.
     if (actorData.type == 'actor') {
-      this.#prepareItems(context.document);
+      this.#prepareItems(context);
       this.#prepareActorData(context);
     }
 
@@ -166,7 +166,7 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     const gear = [];
 
     // Iterate through items, allocating to containers
-    for (let i of context.items) {
+    for (let i of context.document.items) {
       i.img = i.img || Item.DEFAULT_ICON;
       // Append to gear.
       if (i.type === 'item') {
@@ -189,7 +189,7 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     // Get the type of item to create.
     const type = header.dataset.type;
     // Grab any data associated with this control.
-    const data = duplicate(header.dataset);
+    const data = foundry.utils.duplicate(header.dataset);
     // Initialize a default name.
     const name = `New ${type.capitalize()}`;
     // Prepare the item object.
