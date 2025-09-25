@@ -41,8 +41,6 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
 
-    console.log(context);
-
     // Use a safe clone of the actor data for further operations.
     const actorData = this.document.toObject(false);
 
@@ -50,7 +48,6 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     context.system = actorData.system;
     context.flags = actorData.flags;
     context.actor = context.source;
-    console.log(context);
 
     // Adding a pointer to CONFIG.SYSTEMLESS
     context.config = CONFIG.SYSTEMLESS;
@@ -88,7 +85,6 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   }
 
   async _preparePartContext(partId, context, options) {
-    console.log("prepare part");
     const partContext = await super._preparePartContext(partId, context, options);
     if (partId in partContext.tabs)
       partContext.tab = partContext.tabs[partId];
@@ -99,13 +95,13 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   async _onRender(context, options) {
     await super._onRender(context, options);
 
-    const html = $(this.element)
-
     // Render the item sheet for viewing/editing prior to the editable check.
-    html.on('click', '.item-edit', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'));
-      item.sheet.render(true);
+    this.element.querySelectorAll('.item-edit').forEach((e) => {
+        e.addEventListener('click', (ev) => {
+          const li = $(ev.currentTarget).parents('.item');
+          const item = this.actor.items.get(li.data('itemId'));
+          item.sheet.render(true);
+        });
     });
 
     // -------------------------------------------------------------
@@ -113,30 +109,32 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     if (!this.isEditable) return;
 
     // Add Inventory Item
-    html.on('click', '.item-create', this.#onItemCreate.bind(this));
+    this.element.querySelector('.item-create').addEventListener('click', this.#onItemCreate.bind(this));
 
     // Delete Inventory Item
-    html.on('click', '.item-delete', (ev) => {
-      const li = $(ev.currentTarget).parents('.item');
-      const item = this.actor.items.get(li.data('itemId'));
-      item.delete();
-      li.slideUp(200, () => this.render(false));
+    this.element.querySelectorAll('.item-delete').forEach((e) => {
+      e.addEventListener('click', (ev) => {
+        const li = $(ev.currentTarget).parents('.item');
+        const item = this.actor.items.get(li.data('itemId'));
+        item.delete();
+        li.slideUp(200, () => this.render(false));
+      });
     });
 
-    // Active Effect management
-    html.on('click', '.effect-control', (ev) => {
-      const row = ev.currentTarget.closest('li');
-      const document =
-        row.dataset.parentId === this.actor.id
-          ? this.actor
-          : this.actor.items.get(row.dataset.parentId);
-      onManageActiveEffect(ev, document);
-    });
+    // Active Effect management (currently disabled)
+    // this.element.querySelector('.effect-control').addEventListener('click', (ev) => {
+    //   const row = ev.currentTarget.closest('li');
+    //   const document =
+    //     row.dataset.parentId === this.actor.id
+    //       ? this.actor
+    //       : this.actor.items.get(row.dataset.parentId);
+    //   onManageActiveEffect(ev, document);
+    // });
 
     // Drag events for macros.
     if (this.actor.isOwner) {
-      let handler = (ev) => this._onDragStart(ev);
-      html.find('li.item').each((i, li) => {
+      let handler = (ev) => return this._onDragStart(ev);
+      this.element.querySelectorAll('li.item').forEach((li) => {
         if (li.classList.contains('inventory-header')) return;
         li.setAttribute('draggable', true);
         li.addEventListener('dragstart', handler, false);
