@@ -45,6 +45,7 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     const actorData = this.document.toObject(false);
 
     // Add the actor's data to context.data for easier access, as well as flags.
+    context.isOwner = this.actor.isOwner;
     context.system = actorData.system;
     context.flags = actorData.flags;
     context.actor = context.source;
@@ -130,16 +131,6 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     //       : this.actor.items.get(row.dataset.parentId);
     //   onManageActiveEffect(ev, document);
     // });
-
-    // Drag events for macros.
-    if (this.actor.isOwner) {
-      let handler = (ev) => return this._onDragStart(ev);
-      this.element.querySelectorAll('li.item').forEach((li) => {
-        if (li.classList.contains('inventory-header')) return;
-        li.setAttribute('draggable', true);
-        li.addEventListener('dragstart', handler, false);
-      });
-    }
   }
 
   /* -------------------------------------------- */
@@ -171,6 +162,7 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
         gear.push(i);
       }
     }
+    gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
 
     // Assign and return
     context.gear = gear;
