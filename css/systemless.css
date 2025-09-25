@@ -208,13 +208,15 @@
   font-family: "Roboto", sans-serif;
 }
 .systemless .sheet-header {
-  flex: 0 auto;
   overflow: hidden;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
   margin-bottom: 10px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
 }
 .systemless .sheet-header .profile-img {
   flex: 0 0 100px;
@@ -235,12 +237,10 @@
   height: 100%;
   margin: 0;
 }
-.systemless .sheet-tabs {
-  flex: 0;
+.systemless .tab {
+  flex-grow: 1;
 }
-.systemless .sheet-body,
-.systemless .sheet-body .tab,
-.systemless .sheet-body .tab .editor {
+.systemless .tab .editor {
   height: 100%;
 }
 .systemless .tox .tox-editor-container {
