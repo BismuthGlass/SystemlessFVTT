@@ -13,7 +13,10 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
       submitOnChange: true
     },
     classes: ['systemless', 'sheet', 'actor'],
-    position: {width: 600},
+    position: {width: 600, height: 600},
+    window: {
+      resizable: true
+    }
   }
 
   static PARTS = {
