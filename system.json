@@ -49,15 +49,15 @@
   "documentTypes": {
     "Actor": {
       "actor": {
-        "htmlFields": ["biography"]
+        "htmlFields": ["biography", "notes"]
       }
     },
     "Item": {
       "item": {
-        "htmlFields": ["description"]
+        "htmlFields": ["description", "notes"]
       },
       "trait": {
-        "htmlFields": ["description"]
+        "htmlFields": ["description", "notes"]
       }
     }
   }

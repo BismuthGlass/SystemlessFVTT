@@ -4,7 +4,9 @@
       "biography": "Biography",
       "page2": "Page 2",
       "description": "Description",
-      "items": "Items"
+      "items": "Items",
+      "notes": "Notes",
+      "traits": "Traits"
     }
   },
   "TYPES": {

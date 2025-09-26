@@ -36,6 +36,8 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
       labelPrefix: "STEMLESS.tabs",
       tabs: [
         {id: "biography"},
+        {id: "notes"},
+        {id: "traits"},
         {id: "items"}
       ],
     }
@@ -83,10 +85,30 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
         }
       },
       {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["notes"],
+          system: actorData.system,
+          enrichedText: await this.#enrichHTMLField(this.actor.system.notes),
+          rawText: this.actor.system.notes,
+          textSource: "system.notes",
+        }
+      },
+      {
+        source: () => "systems/crow-systemless/templates/actor/actor-sheet-items.hbs",
+        data: {
+          tab: context.tabs["traits"],
+          system: actorData.system,
+          type: 'trait',
+          items: this.#prepareItems(context.document.items, 'trait'),
+        }
+      },
+      {
         source: () => "systems/crow-systemless/templates/actor/actor-sheet-items.hbs",
         data: {
           tab: context.tabs["items"],
           system: actorData.system,
+          type: 'item',
           items: this.#prepareItems(context.document.items, 'item'),
         }
       }

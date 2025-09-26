@@ -32,8 +32,10 @@ export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
   static TABS = {
     sheet: {
       initial: "description",
+      labelPrefix: "STEMLESS.tabs",
       tabs: [
-        {id: "description", label: "Description"}
+        {id: "description"},
+        {id: "notes"}
       ]
     }
   }
@@ -60,6 +62,15 @@ export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
           enrichedText: await this.#enrichHTMLField(this.document.system.description),
           rawText: this.document.system.description,
           textSource: "system.description"
+        }
+      },
+      {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["notes"],
+          enrichedText: await this.#enrichHTMLField(this.document.system.notes),
+          rawText: this.document.system.notes,
+          textSource: "system.notes"
         }
       }
     ];
