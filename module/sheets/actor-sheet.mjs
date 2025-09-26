@@ -5,7 +5,7 @@ const {HandlebarsApplicationMixin} = foundry.applications.api;
 
 /**
  * Extend the basic ActorSheet with some very simple modifications
- * @extends {ActorSheet}
+ * @extends {ActorSheetV2}
  */
 export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {

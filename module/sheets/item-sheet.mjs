@@ -1,43 +1,40 @@
 const GlobalTextEditor = foundry.applications.ux.TextEditor.implementation;
+const { ItemSheetV2 } = foundry.applications.sheets;
+const { HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
- * @extends {ItemSheet}
+ * @extends {ItemSheetV2}
  */
-export class SystemlessItemSheet extends foundry.appv1.sheets.ItemSheet {
-  /** @override */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['systemless', 'sheet', 'item'],
-      width: 520,
-      height: 480,
+export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
+  static DEFAULT_OPTIONS = {
+    form: {
+      submitOnChange: true
+    },
+    classes: ['systemless', 'sheet', 'item'],
+    position: {width: 520, height: 480},
+    window: {
+      resizable: true
+    }
+  }
+
+  static PARTS = {
+    header: {template: 'systems/crow-systemless/templates/item/item-sheet-header.hbs'},
+    tabs: {template: 'templates/generic/tab-navigation.hbs'},
+    description: {template: 'systems/crow-systemless/templates/item/item-sheet-description.hbs'}
+  }
+
+  static TABS = {
+    sheet: {
+      initial: "description",
       tabs: [
-        {
-          navSelector: '.sheet-tabs',
-          contentSelector: '.sheet-body',
-          initial: 'description',
-        },
-      ],
-    });
+        {id: "description", label: "Description"}
+      ]
+    }
   }
 
-  /** @override */
-  get template() {
-    const path = 'systems/systemless/templates/item';
-    // Return a single sheet for all item types.
-    return `${path}/item-sheet.hbs`;
-
-    // Alternatively, you could use the following return statement to do a
-    // unique item sheet by type, like `weapon-sheet.hbs`.
-    // return `${path}/item-${this.item.type}-sheet.hbs`;
-  }
-
-  /* -------------------------------------------- */
-
-  /** @override */
-  async getData() {
-    // Retrieve base data structure.
-    const context = super.getData();
+  async _prepareContext(options) {
+    const context = await super._prepareContext(options);
 
     // Use a safe clone of the item data for further operations.
     const itemData = this.document.toObject(false);
@@ -61,6 +58,7 @@ export class SystemlessItemSheet extends foundry.appv1.sheets.ItemSheet {
     // Add the item's data to context.data for easier access, as well as flags.
     context.system = itemData.system;
     context.flags = itemData.flags;
+    context.item = context.source;
 
     // Adding a pointer to CONFIG.SYSTEMLESS
     context.config = CONFIG.SYSTEMLESS;
@@ -68,16 +66,10 @@ export class SystemlessItemSheet extends foundry.appv1.sheets.ItemSheet {
     return context;
   }
 
-  /* -------------------------------------------- */
-
-  /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    // Everything below here is only needed if the sheet is editable
-    if (!this.isEditable) return;
-
-    // Roll handlers, click handlers, etc. would go here.
-
+  async _preparePartContext(partId, context, options) {
+    const partContext = await super._preparePartContext(partId, context, options);
+    if (partId in partContext.tabs)
+      partContext.tab = partContext.tabs[partId];
+    return partContext;
   }
 }
