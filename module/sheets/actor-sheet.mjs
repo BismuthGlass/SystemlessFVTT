@@ -22,18 +22,17 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   static PARTS = {
     header: {template: 'systems/crow-systemless/templates/actor/actor-sheet-header.hbs'},
     tabs: {template: "templates/generic/tab-navigation.hbs"},
-    bio: {template: 'systems/crow-systemless/templates/actor/actor-sheet-bio.hbs'},
-    page2: {template: 'systems/crow-systemless/templates/actor/actor-sheet-page2.hbs'},
+    biography: {template: 'systems/crow-systemless/templates/actor/actor-sheet-biography.hbs'},
     items: {template: 'systems/crow-systemless/templates/actor/actor-sheet-items.hbs'},
   }
 
   static TABS = {
     sheet: {
-      initial: "bio",
+      initial: "biography",
+      labelPrefix: "STEMLESS.tabs",
       tabs: [
-        {id: "bio", label: "Description"},
-        {id: "page2", label: "Page 2"},
-        {id: "items", label: "Items"}
+        {id: "biography"},
+        {id: "items"}
       ],
     }
   }

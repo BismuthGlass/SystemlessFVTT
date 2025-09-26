@@ -1,17 +1,10 @@
 {
-  "SYSTEMLESS": {
-    "SheetLabels": {
-      "Actor": "Systemless Actor Sheet",
-      "Item": "Systemless Item Sheet"
+  "STEMLESS": {
+    "tabs": {
+      "biography": "Biography",
+      "page2": "Page 2",
+      "description": "Description",
+      "items": "Items"
     }
   },
-
-  "TYPES": {
-    "Actor": {
-      "actor": "Actor"
-    },
-    "Item": {
-      "item": "Item"
-    }
-  }
 }
