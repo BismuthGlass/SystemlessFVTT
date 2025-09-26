@@ -68,4 +68,11 @@ export class SystemlessItem extends Item {
       return roll;
     }
   }
+
+  static getDefaultArtwork(itemData) {
+    if (itemData.type == 'trait') {
+      return { img: 'icons/svg/lightning.svg' };
+    }
+    return { img: 'icons/svg/item-bag.svg' }
+  }
 }

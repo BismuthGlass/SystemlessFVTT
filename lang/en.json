@@ -12,7 +12,8 @@
       "actor": "Actor"
     },
     "Item": {
-      "item": "Item"
+      "item": "Item",
+      "trait": "Trait"
     }
   }
 }
