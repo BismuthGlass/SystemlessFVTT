@@ -7,6 +7,7 @@ import { SystemlessItemSheet } from './sheets/item-sheet.mjs';
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { SYSTEMLESS } from './helpers/config.mjs';
+import { GenericActorData, GenericItemData } from './models.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -31,6 +32,10 @@ Hooks.once('init', function () {
     formula: '1d20',
     decimals: 2,
   };
+
+  // Define data models
+  CONFIG.Actor.dataModels.actor = GenericActorData;
+  CONFIG.Item.dataModels.item = GenericItemData;
 
   // Define custom Document classes
   CONFIG.Actor.documentClass = SystemlessActor;
