@@ -19,10 +19,15 @@ export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
   }
 
   static PARTS = {
-    header: {template: 'systems/crow-systemless/templates/item/item-sheet-header.hbs'},
-    tabs: {template: 'templates/generic/tab-navigation.hbs'},
-    description: {template: 'systems/crow-systemless/templates/item/item-sheet-description.hbs'}
+    sheet: {
+      template: 'systems/crow-systemless/templates/generic/document-sheet.hbs',
+      templates: [
+        "templates/generic/tab-navigation.hbs",
+        "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+      ],
+    },
   }
+
 
   static TABS = {
     sheet: {
@@ -36,32 +41,28 @@ export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
 
+    // Required UI properties
+    context.verticalTabs = true;
+
     // Use a safe clone of the item data for further operations.
     const itemData = this.document.toObject(false);
-
-    // Enrich description info for display
-    // Enrichment turns text like `[[/r 1d20]]` into buttons
-    context.enrichedDescription = await GlobalTextEditor.enrichHTML(
-      this.item.system.description,
-      {
-        // Whether to show secret blocks in the finished html
-        secrets: this.document.isOwner,
-        // Necessary in v11, can be removed in v12
-        async: true,
-        // Data to fill in for inline rolls
-        rollData: this.item.getRollData(),
-        // Relative UUID resolution
-        relativeTo: this.item,
-      }
-    );
 
     // Add the item's data to context.data for easier access, as well as flags.
     context.system = itemData.system;
     context.flags = itemData.flags;
     context.item = context.source;
 
-    // Adding a pointer to CONFIG.SYSTEMLESS
-    context.config = CONFIG.SYSTEMLESS;
+    context.tabSources = [
+      {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["description"],
+          enrichedText: await this.#enrichHTMLField(this.document.system.description),
+          rawText: this.document.system.description,
+          textSource: "system.description"
+        }
+      }
+    ];
 
     return context;
   }
@@ -71,5 +72,16 @@ export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     if (partId in partContext.tabs)
       partContext.tab = partContext.tabs[partId];
     return partContext;
+  }
+
+  async #enrichHTMLField(data) {
+    return await GlobalTextEditor.enrichHTML(
+      data,
+      {
+        secrets: this.document.isOwner,
+        rollData: this.item.getRollData(),
+        relativeTo: this.item,
+      }
+    );
   }
 }
