@@ -20,10 +20,14 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   }
 
   static PARTS = {
-    header: {template: 'systems/crow-systemless/templates/actor/actor-sheet-header.hbs'},
-    tabs: {template: "templates/generic/tab-navigation.hbs"},
-    biography: {template: 'systems/crow-systemless/templates/actor/actor-sheet-biography.hbs'},
-    items: {template: 'systems/crow-systemless/templates/actor/actor-sheet-items.hbs'},
+    sheet: {
+      template: 'systems/crow-systemless/templates/generic/document-sheet.hbs',
+      templates: [
+        "templates/generic/tab-navigation.hbs",
+        "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        "systems/crow-systemless/templates/actor/actor-sheet-items.hbs"
+      ],
+    },
   }
 
   static TABS = {
@@ -40,6 +44,9 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   async _prepareContext(options) {
     const context = await super._prepareContext(options);
 
+    // Required UI properties
+    context.verticalTabs = true;
+
     // Use a safe clone of the actor data for further operations.
     const actorData = this.document.toObject(false);
 
@@ -49,18 +56,9 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     context.flags = actorData.flags;
     context.actor = context.source;
 
-    // Adding a pointer to CONFIG.SYSTEMLESS
-    context.config = CONFIG.SYSTEMLESS;
-
-    // Prepare character data and items.
-    if (actorData.type == 'actor') {
-      this.#prepareItems(context);
-      this.#prepareActorData(context);
-    }
-
     // Enrich biography info for display
     // Enrichment turns text like `[[/r 1d20]]` into buttons
-    context.enrichedBiography = await GlobalTextEditor.enrichHTML(
+    const enrichedBiography = await GlobalTextEditor.enrichHTML(
       this.actor.system.biography,
       {
         // Whether to show secret blocks in the finished html
@@ -72,23 +70,29 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
       }
     );
 
-    context.enrichedPage2 = await GlobalTextEditor.enrichHTML(
-      this.actor.system.page2,
+    // Define all tab sources
+    context.tabSources = [
       {
-        secrets: this.document.isOwner,
-        rollData: this.actor.getRollData(),
-        relativeTo: this.actor,
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["biography"],
+          system: actorData.system,
+          enrichedText: await this.#enrichHTMLField(this.actor.system.biography),
+          rawText: this.actor.system.biography,
+          textSource: "system.biography",
+        }
+      },
+      {
+        source: () => "systems/crow-systemless/templates/actor/actor-sheet-items.hbs",
+        data: {
+          tab: context.tabs["items"],
+          system: actorData.system,
+          items: this.#prepareItems(context.document.items, 'item'),
+        }
       }
-    );
+    ];
 
     return context;
-  }
-
-  async _preparePartContext(partId, context, options) {
-    const partContext = await super._preparePartContext(partId, context, options);
-    if (partId in partContext.tabs)
-      partContext.tab = partContext.tabs[partId];
-    return partContext;
   }
 
   /** @override */
@@ -135,36 +139,22 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
   /* -------------------------------------------- */
 
   /**
-   * Character-specific context modifications
-   *
-   * @param {object} context The context object to mutate
-   */
-  #prepareActorData(context) {
-    // This is where you can enrich character-specific editor fields
-    // or setup anything else that's specific to this type
-  }
-
-  /**
    * Organize and classify Items for Actor sheets.
    *
    * @param {object} context The context object to mutate
    */
-  #prepareItems(context) {
-    // Initialize containers.
-    const gear = [];
+  #prepareItems(documentItems, type) {
+    const items = [];
 
-    // Iterate through items, allocating to containers
-    for (let i of context.document.items) {
+    for (let i of documentItems) {
       i.img = i.img || Item.DEFAULT_ICON;
-      // Append to gear.
-      if (i.type === 'item') {
-        gear.push(i);
+      if (i.type === type) {
+        items.push(i);
       }
     }
-    gear.sort((a, b) => (a.sort || 0) - (b.sort || 0));
+    items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
 
-    // Assign and return
-    context.gear = gear;
+    return items;
   }
 
   /**
@@ -193,4 +183,15 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     // Finally, create the item!
     return await Item.create(itemData, { parent: this.actor });
   };
+
+  async #enrichHTMLField(data) {
+    return await GlobalTextEditor.enrichHTML(
+      data,
+      {
+        secrets: this.document.isOwner,
+        rollData: this.actor.getRollData(),
+        relativeTo: this.actor,
+      }
+    );
+  }
 }
