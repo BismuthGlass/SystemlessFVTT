@@ -1,0 +1,25 @@
+{{! Generic sheet template for both actors and items. }}
+
+<div class="main-container">
+  {{! Left, containing the image and the menu }}
+  <div>
+    <div class="sheet-img">
+      <img class="profile-img" src="{{source.img}}" data-action="editImage" data-edit="img" title="{{source.name}}" height="100" width="100"/>
+    </div>
+    {{> "templates/generic/tab-navigation.hbs"}}
+  </div>
+  
+  {{! Right, containing the name and text }}
+  <div>
+    <div class="sheet-name">
+      <div class="header-fields">
+        <h2 class="charname"><input name="name" type="text" value="{{source.name}}" placeholder="{{localize 'Name'}}"/></h2>
+      </div>
+    </div>
+    {{! Tabs go here }}
+
+    {{#each tabSources as |tabSource|}}
+    {{> (tabSource.source) tabSource.data}}
+    {{/each}}
+  </div>
+</div>
