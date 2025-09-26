@@ -243,11 +243,50 @@
 .systemless .tab .editor {
   height: 100%;
 }
-.systemless .tox .tox-editor-container {
-  background: #fff;
+.systemless nav.tabs .active {
+  background-color: var(--color-form-label);
+  color: var(--background);
 }
-.systemless .tox .tox-edit-area {
-  padding: 0 8px;
+.systemless nav.tabs [data-tab] {
+  text-align: center;
+  padding: 0;
+  line-height: 2em;
+}
+.systemless .main-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 10px;
+  height: 100%;
+}
+.systemless .main-container > div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.systemless .main-container > div:nth-child(1) {
+  flex-shrink: 0;
+}
+.systemless .main-container > div:nth-child(1) .sheet-img {
+  flex-shrink: 0;
+}
+.systemless .main-container > div:nth-child(1) .sheet-img img {
+  cursor: pointer;
+}
+.systemless .main-container > div:nth-child(1) .sheet-tabs {
+  flex-grow: 1;
+}
+.systemless .main-container > div:nth-child(2) {
+  flex-grow: 1;
+}
+.systemless .main-container > div:nth-child(2) .sheet-name {
+  flex-shrink: 0;
+}
+.systemless .main-container > div:nth-child(2) .sheet-name h2 {
+  margin: 0;
+}
+.systemless .main-container > div:nth-child(2) .tab {
+  flex-grow: 1;
 }
 .systemless .resource-label {
   font-weight: bold;
@@ -277,7 +316,6 @@
   padding: 0;
   overflow-y: auto;
   scrollbar-width: thin;
-  color: #444;
 }
 .systemless .items-list .item-list {
   list-style: none;
@@ -311,13 +349,10 @@
 .systemless .items-list .item {
   align-items: center;
   padding: 0 2px;
-  border-bottom: 1px solid #c9c7b8;
+  border-bottom: 1px solid var(--color-form-label);
 }
 .systemless .items-list .item:last-child {
   border-bottom: none;
-}
-.systemless .items-list .item .item-name {
-  color: #191813;
 }
 .systemless .items-list .item .item-name .item-image {
   flex: 0 0 30px;
@@ -328,8 +363,6 @@
 }
 .systemless .items-list .item-prop {
   text-align: center;
-  border-left: 1px solid #c9c7b8;
-  border-right: 1px solid #c9c7b8;
   font-size: 12px;
 }
 .systemless .items-list .items-header {
@@ -337,8 +370,6 @@
   margin: 2px 0;
   padding: 0;
   align-items: center;
-  background: rgba(0, 0, 0, 0.05);
-  border: 2px groove #eeede0;
   font-weight: bold;
 }
 .systemless .items-list .items-header > * {

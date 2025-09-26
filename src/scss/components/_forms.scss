@@ -38,18 +38,65 @@
 
 .tab {
     flex-grow: 1;
-    
+
     .editor {
         height: 100%;
     }
 }
 
-.tox {
-  .tox-editor-container {
-    background: $c-white;
-  }
+nav.tabs {
+    .active {
+        background-color: var(--color-form-label);
+        color: var(--background);
+    }
 
-  .tox-edit-area {
-    padding: 0 8px;
-  }
+    [data-tab] {
+        text-align: center;
+        padding: 0;
+        line-height: 2em;
+    }
+}
+
+.main-container {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 10px;
+    height: 100%;
+
+    >div {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+.main-container > div:nth-child(1) {
+    flex-shrink: 0;
+
+    .sheet-img {
+        flex-shrink: 0;
+
+        img {
+            cursor: pointer;
+        }
+    }
+
+    .sheet-tabs {
+        flex-grow: 1;
+    }
+}
+.main-container > div:nth-child(2) {
+    flex-grow: 1;
+
+    .sheet-name {
+        flex-shrink: 0;
+
+        h2 {
+            margin: 0;
+        }
+    }
+
+    .tab {
+        flex-grow: 1;
+    }
 }
