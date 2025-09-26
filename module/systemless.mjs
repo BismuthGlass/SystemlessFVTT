@@ -36,6 +36,7 @@ Hooks.once('init', function () {
   // Define data models
   CONFIG.Actor.dataModels.actor = GenericActorData;
   CONFIG.Item.dataModels.item = GenericItemData;
+  CONFIG.Item.dataModels.trait = GenericItemData;
 
   // Define custom Document classes
   CONFIG.Actor.documentClass = SystemlessActor;
