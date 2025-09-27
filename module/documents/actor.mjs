@@ -47,6 +47,13 @@ export class SystemlessActor extends Actor {
     const systemData = actorData.system;
   }
 
+  async _preCreate(data, options, user) {
+    const allowed = await super._preCreate(data, options, user);
+    if (allowed === false)
+      return false;
+    this.prototypeToken.updateSource({lockRotation: true});
+  }
+
   static getDefaultArtwork(actorData) {
     if (actorData.type == 'actor') {
       return { img: 'icons/svg/cowled.svg' };
