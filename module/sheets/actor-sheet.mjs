@@ -135,7 +135,9 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
     if (!this.isEditable) return;
 
     // Add Inventory Item
-    this.element.querySelector('.item-create').addEventListener('click', this.#onItemCreate.bind(this));
+    this.element.querySelectorAll('.item-create').forEach((e) => {
+      e.addEventListener('click', this.#onItemCreate.bind(this));
+    });
 
     // Delete Inventory Item
     this.element.querySelectorAll('.item-delete').forEach((e) => {
