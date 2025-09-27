@@ -73,6 +73,6 @@ export class SystemlessItem extends Item {
     if (itemData.type == 'trait') {
       return { img: 'icons/svg/lightning.svg' };
     }
-    return { img: 'icons/svg/item-bag.svg' }
+    return { img: 'icons/svg/item-bag.svg' };
   }
 }

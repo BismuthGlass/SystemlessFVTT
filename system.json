@@ -50,6 +50,9 @@
     "Actor": {
       "actor": {
         "htmlFields": ["biography", "notes"]
+      },
+      "token": {
+        "htmlFields": ["description", "notes"]
       }
     },
     "Item": {

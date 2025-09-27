@@ -47,5 +47,10 @@ export class SystemlessActor extends Actor {
     const systemData = actorData.system;
   }
 
-
+  static getDefaultArtwork(actorData) {
+    if (actorData.type == 'actor') {
+      return { img: 'icons/svg/cowled.svg' };
+    }
+    return { img: 'icons/svg/trap.svg' };
+  }
 }

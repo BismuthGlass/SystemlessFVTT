@@ -11,7 +11,8 @@
   },
   "TYPES": {
     "Actor": {
-      "actor": "Actor"
+      "actor": "Actor",
+      "token": "Token"
     },
     "Item": {
       "item": "Item",

@@ -4,10 +4,11 @@ import { SystemlessItem } from './documents/item.mjs';
 // Import sheet classes.
 import { SystemlessActorSheet } from './sheets/actor-sheet.mjs';
 import { SystemlessItemSheet } from './sheets/item-sheet.mjs';
+import { SystemlessTokenSheet } from './sheets/token-sheet.mjs';
 // Import helper/utility classes and constants.
 import { preloadHandlebarsTemplates } from './helpers/templates.mjs';
 import { SYSTEMLESS } from './helpers/config.mjs';
-import { GenericActorData, GenericItemData } from './models.mjs';
+import { GenericActorData, GenericItemData, TokenData } from './models.mjs';
 
 /* -------------------------------------------- */
 /*  Init Hook                                   */
@@ -35,6 +36,7 @@ Hooks.once('init', function () {
 
   // Define data models
   CONFIG.Actor.dataModels.actor = GenericActorData;
+  CONFIG.Actor.dataModels.token = TokenData;
   CONFIG.Item.dataModels.item = GenericItemData;
   CONFIG.Item.dataModels.trait = GenericItemData;
 
@@ -53,6 +55,12 @@ Hooks.once('init', function () {
   Actors.registerSheet('systemless', SystemlessActorSheet, {
     makeDefault: true,
     label: 'SYSTEMLESS.SheetLabels.Actor',
+    types: [ 'actor' ],
+  });
+  Actors.registerSheet('systemless', SystemlessTokenSheet, {
+    makeDefault: true,
+    label: 'SYSTEMLESS.SheetLabels.Actor',
+    types: [ 'token' ],
   });
   const Items = foundry.documents.collections.Items;
   Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);

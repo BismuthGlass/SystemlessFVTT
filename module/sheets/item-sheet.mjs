@@ -46,14 +46,6 @@ export class SystemlessItemSheet extends HandlebarsApplicationMixin(ItemSheetV2)
     // Required UI properties
     context.verticalTabs = true;
 
-    // Use a safe clone of the item data for further operations.
-    const itemData = this.document.toObject(false);
-
-    // Add the item's data to context.data for easier access, as well as flags.
-    context.system = itemData.system;
-    context.flags = itemData.flags;
-    context.item = context.source;
-
     context.tabSources = [
       {
         source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
