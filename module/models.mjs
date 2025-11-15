@@ -5,6 +5,10 @@ export class GenericActorData extends foundry.abstract.TypeDataModel {
     return {
       biography: new HTMLField(),
       notes: new HTMLField(),
+      statistics: new HTMLField(),
+      abilities: new HTMLField(),
+      inventory: new HTMLField(),
+      progression: new HTMLField(),
     }
   }
 }

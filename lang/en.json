@@ -1,6 +1,10 @@
 {
   "STEMLESS": {
     "tabs": {
+      "statistics": "Statistics",
+      "abilities": "Abilities",
+      "inventory": "Inventory",
+      "progression": "Progression",
       "biography": "Biography",
       "page2": "Page 2",
       "description": "Description",

@@ -49,7 +49,14 @@
   "documentTypes": {
     "Actor": {
       "actor": {
-        "htmlFields": ["biography", "notes"]
+        "htmlFields": [
+          "biography",
+          "notes",
+          "statistics",
+          "abilities",
+          "inventory",
+          "progression"
+        ]
       },
       "token": {
         "htmlFields": ["description", "notes"]

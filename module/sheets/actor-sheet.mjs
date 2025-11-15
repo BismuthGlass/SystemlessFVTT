@@ -32,9 +32,13 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
 
   static TABS = {
     sheet: {
-      initial: "biography",
+      initial: "statistics",
       labelPrefix: "STEMLESS.tabs",
       tabs: [
+        {id: "statistics"},
+        {id: "abilities"},
+        {id: "inventory"},
+        {id: "progression"},
         {id: "biography"},
         {id: "notes"},
         {id: "traits"},
@@ -74,6 +78,46 @@ export class SystemlessActorSheet extends HandlebarsApplicationMixin(ActorSheetV
 
     // Define all tab sources
     context.tabSources = [
+      {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["statistics"],
+          system: actorData.system,
+          enrichedText: await this.#enrichHTMLField(this.actor.system.statistics),
+          rawText: this.actor.system.statistics,
+          textSource: "system.statistics",
+        }
+      },
+      {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["abilities"],
+          system: actorData.system,
+          enrichedText: await this.#enrichHTMLField(this.actor.system.abilities),
+          rawText: this.actor.system.abilities,
+          textSource: "system.abilities",
+        }
+      },
+      {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["inventory"],
+          system: actorData.system,
+          enrichedText: await this.#enrichHTMLField(this.actor.system.inventory),
+          rawText: this.actor.system.inventory,
+          textSource: "system.inventory",
+        }
+      },
+      {
+        source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
+        data: {
+          tab: context.tabs["progression"],
+          system: actorData.system,
+          enrichedText: await this.#enrichHTMLField(this.actor.system.progression),
+          rawText: this.actor.system.progression,
+          textSource: "system.progression",
+        }
+      },      
       {
         source: () => "systems/crow-systemless/templates/generic/text-editor-tab.hbs",
         data: {
