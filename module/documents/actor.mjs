@@ -55,9 +55,10 @@ export class SystemlessActor extends Actor {
   }
 
   static getDefaultArtwork(actorData) {
-    if (actorData.type == 'actor') {
-      return { img: 'icons/svg/cowled.svg' };
+    let src = 'icons/svg/cowled.svg';
+    if (actorData.type == 'token') {
+        src = 'icons/svg/trap.svg';
     }
-    return { img: 'icons/svg/trap.svg' };
+    return { img: src, texture: { src } };
   }
 }
