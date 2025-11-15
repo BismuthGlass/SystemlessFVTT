@@ -288,8 +288,22 @@
 .systemless .main-container > div:nth-child(2) .tab {
   flex-grow: 1;
 }
-.systemless .editor-content hr {
+.systemless hr {
   background-image: linear-gradient(90deg, transparent 0%, var(--color-text-primary) 50%, transparent 100%);
+}
+.systemless .tab-biography {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.systemless .tab-biography > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.systemless .tab-biography > div prose-mirror {
+  flex: 1;
 }
 .systemless .resource-label {
   font-weight: bold;
@@ -396,3 +410,5 @@
 .systemless .effects .item .effect-controls {
   border: none;
 }
+
+/*# sourceMappingURL=systemless.css.map */
